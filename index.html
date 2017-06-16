@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="quizApp">
+    <head> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>    
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-sanitize.js"></script>
+		
+		<script src="js/bower_components/chart.js/dist/Chart.min.js"></script>
+		<script src="js/bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+
+        <script src="js/mainCtrl.js"></script>
+        <script src="js/quizCtrl.js"></script>
+      
+		<!-- Website CSS style -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css">
+
+		<!-- Website Font style -->
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		
+		<!-- Google Fonts -->
+		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+
+		<title>::Quiz App::</title>
+	</head>
+
+	<body ng-cloak ng-controller="quizCtrl">
+	<div class="container-fluid">
+      <a class="navbar-brand" href="" ng-click="reset()">
+		  <img src="image/download.jpeg"/>
+	  </a>
+    </div>
+
+		<div class="container" ng-if="show_Login==true">	
+			<div class="row main">
+				<div class="main-login main-center">
+                    <div class="pull-center">
+				<h4>Docket Quiz App</h4>
+                    </div>
+					<form name="loginForm" ng-submit="startQuiz()" ng-disabled="loginForm.$valid">						
+						<div class="form-group">
+							<label for="name" class="cols-sm-2 control-label">Your Name</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+									<input type="text" class="form-control" ng-model="userName" name="name" id="name"  placeholder="Enter your Name"  ng-required="true"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="email" class="cols-sm-2 control-label">Your Email</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+									<input type="email" class="form-control" ng-model="userEmail" name="email" id="email"  placeholder="Enter your Email"  ng-required="true"/>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="phone" class="cols-sm-2 control-label">Phone</label>
+							<div class="cols-sm-10">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-phone-square" aria-hidden="true"></i></span>
+									<input type="number" class="form-control" name="phone" id="phone"  placeholder="Enter your Phone Number" ng-model="phone" ng-required="true"/>
+								</div>
+							</div>
+						</div>
+
+					
+						<div>
+                            <button type="submit" id="button" class="btn btn-primary btn-lg btn-block login-button"> Login </button>							
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+
+<div class="container" ng-if="show_Login==false">
+ <div class="center">
+	 <div class="row main pull-centre">	
+
+		 <div class="" ng-show="inProgress">
+
+		<div ng-show="!quizOver">
+				<h2 id="question">{{question}}</h2>
+		<ul class="is-ul li" id="options">
+			<li ng-repeat="option in options">
+				<label>
+					<input type="radio" name="answer" class="option-input radio" value="{{option}}">				
+					{{option}}
+				</label>
+			</li>
+		</ul>
+		<button class="pull-right btn-warning" ng-click="checkAnswer()">Submit</button>
+	  </div> 
+
+	<div ng-show="quizOver">
+		 <div class="row main pull-centre">	
+			<div class="col-md-12">
+				<h2>Quiz Result</h2>
+				<h4>Below is a review of your answers to the questions in this quiz:</h4>
+			</div>
+		
+<div class="col-md-8">
+	 <div ng-repeat="res in result" class="score-item">
+        <div class="question">
+            <h4>
+                {{res.question}}
+            </h4>
+        </div>
+
+        <div ng-if="res.answer == res.userAnswer" class="answer correct">
+            <div class="expected">
+                <p><span class="sucess-title">Correct:</span></p>
+                <p>{{res.answer}}</p>
+            </div>
+        </div>
+
+        <div ng-if="res.answer != res.userAnswer" class="answer incorrect" >
+            <div class="given">
+                <p><span class="failure-title">You answered incorrectly:</span></p>
+                <p>{{res.userAnswer}}</p>
+            </div>
+            <div class="expected">
+                <p><span class="sucess-title">Correct answer was:</span></p>
+                <p>{{ res.answer }}</p>
+            </div>
+        </div>
+
+    </div>
+
+   </div>
+   <div class="col-md-4">
+	<div style="width:100%" class="pull-right">	
+		<canvas id="pie" class="chart chart-pie"
+     	chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors">
+		</canvas> 	
+	</div>
+</div>
+  </div>
+	<div class="row">
+		<div class="col-md-8"><button class="pull-right btn-warning" ng-click="reset()">Play again</button></div>
+	</div>
+	</div>
+	 </div>
+	</div>
+
+	 </div>
+</div>
+
+
+
+		 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+	
+
+	</body>
+</html>
